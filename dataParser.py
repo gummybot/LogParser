@@ -56,3 +56,23 @@ def filterDataByURL(fileData):
             filteredData.pop(url, "Key not found")
 
     return filteredData
+
+def convertURLtotype(fileData):
+    file = os.path.curdir + "\\" + urlCFGFile
+    urldict = dict()
+    with open(file,'r') as cfgFile:
+        urls = cfgFile.read().splitlines()
+        for entry in urls:
+            key, url = entry.split(":")
+            if "{id}" in url:
+                url = url.replace("{id}", "[0-9]+")
+            urldict[int(key)] = url
+
+    for i in range(0, len(fileData)):
+        entry = fileData[i]
+        url = entry['url']
+        for urlkey, urltype in urldict.items():
+            if re.search(urltype, url):
+                entry['url'] = urlkey
+                break
+

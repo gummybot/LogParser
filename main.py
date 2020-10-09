@@ -2,33 +2,25 @@ import os
 import sys
 from fileHandler import *
 from dataParser import *
-
-
-
-
+from utils import *
 
 if __name__ == "__main__":
-    filePath = os.path.curdir
     fileName = "Sample input - Log Parser.csv"
-    fileData = scanCSVFile(fileName, filePath)
-    if fileData == False:
+    if os.path.isfile(fileName) == False:
         print("File Not Found")
         sys.exit(0)
-    print(fileData)
+    fileData = scanCSVFile(fileName)
+    #print(fileData)
     formatData(fileData)
-    filteredData = filterDataByMethod(fileData)
-    for method in filteredData.keys():
-        filteredData2 = filterDataByURL(filteredData[method])
-        filteredData[method] = filteredData2
+    convertURLtotype(fileData)
+    df = converttoDF(fileData)
 
-    print(filteredData)
+    sorted_df = get_freq(df)
+    print("1.	Top 5 highest throughput URLs:")
+    print(sorted_df.iloc[:5])
 
-    filteredData3 = filterDataByURL(fileData)
-    for url in filteredData3.keys():
-        filteredData4 = filterDataByMethod(filteredData3[url])
-        filteredData3[url] = filteredData4
 
-    print(filteredData3)
-    print(filteredData3[4])
+    print("2.	Time taken for each endpoint:")
+    print_res_time_details(df)
 
 
